@@ -1501,10 +1501,6 @@ setfullscreen(Client *c, int fullscreen)
 		XChangeProperty(dpy, c->win, netatom[NetWMState], XA_ATOM, 32,
 			PropModeReplace, (unsigned char*)0, 0);
 		c->isfullscreen = 0;
-
-		if (fakefullscreen)
-			return;
-
 		c->isfloating = c->oldstate;
 		c->bw = c->oldbw;
 		c->x = c->oldx;
@@ -1734,6 +1730,8 @@ void
 togglefakefull(const Arg *arg)
 {
 	fakefullscreen = !fakefullscreen;
+	if (selmon->sel && selmon->sel->isfullscreen)
+		setfullscreen(selmon->sel, 0);
 }
 
 void
@@ -1753,7 +1751,7 @@ togglefloating(const Arg *arg)
 void
 togglefullscr(const Arg *arg)
 {
-	if (selmon->sel)
+	if (!fakefullscreen && selmon->sel)
 		setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
