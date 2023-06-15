@@ -6,6 +6,11 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int padbar             = 2;        /* padding around bar text */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const unsigned int gappih    = 10;       /* horiz inner gap between windows */
+static const unsigned int gappiv    = 10;       /* vert inner gap between windows */
+static const unsigned int gappoh    = 10;       /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov    = 10;       /* vert outer gap between windows and screen edge */
+static       int smartgaps          = 1;        /* 1 means no outer gap when there is only one window */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#222222";
@@ -40,15 +45,26 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
 static const int refreshrate = 120;  /* refresh rate (per second) for client move/resize */
 static int fakefullscreen    = 1;
 
+/* HACK: doing this properly would make it hard to merge upstream commits */
+#include "gaps.c"
+#include "layouts.c"
+
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "TTT",      bstack },
+	{ "===",      bstackhoriz },
+	{ "---",      horizgrid },
+	{ "M[]",      deck },
+	{ "|M|",      centeredmaster },
+	{ "><>",      NULL },    /* no layout function means floating behavior */
 };
 
 /* key definitions */
 #define MODKEY Mod1Mask
+#define ALTKEY Mod1Mask
+#define SUPKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -90,13 +106,31 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
-	{ MODKEY|ShiftMask,             XK_f,      setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_space,  setlayout,      {0} },
+
+	/* Layouts */
+	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} }, /* tiled */
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[1]} }, /* monocole */
+	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[2]} }, /* bstack */
+	{ MODKEY|ShiftMask,             XK_u,      setlayout,      {.v = &layouts[3]} }, /* bstack h */
+	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[4]} }, /* horizgrid */
+	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[5]} }, /* deck */
+	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[6]} }, /* centermaster */
+	{ MODKEY|ShiftMask,             XK_y,      setlayout,      {.v = &layouts[7]} }, /* float */
+	{ MODKEY,                       XK_space,  setlayout,      {0} }, /* last layout */
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	{ MODKEY|ShiftMask,             XK_y,      togglefakefull, {0} },
 	{ MODKEY,                       XK_f,      togglefullscr,  {0} },
+	{ MODKEY|ShiftMask,             XK_f,      togglefakefull, {0} },
+
+	/* gaps */
+	{ MODKEY,                       XK_z,      incrgaps,       {.i = +2 } },
+	{ MODKEY|ShiftMask,             XK_z,      incrgaps,       {.i = -2 } },
+	{ MODKEY,                       XK_s,      incrigaps,      {.i = +2 } },
+	{ MODKEY|ShiftMask,             XK_s,      incrigaps,      {.i = -2 } },
+	{ MODKEY,                       XK_x,      incrogaps,      {.i = +2 } },
+	{ MODKEY|ShiftMask,             XK_x,      incrogaps,      {.i = -2 } },
+	{ SUPKEY,                       XK_0,      togglegaps,     {0} },
+	{ SUPKEY|ShiftMask,             XK_0,      defaultgaps,    {0} },
+
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
