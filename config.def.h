@@ -1,5 +1,8 @@
 /* See LICENSE file for copyright and license details. */
 
+/* Allow use of special keys */
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -46,7 +49,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.60; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int refreshrate = 120;  /* refresh rate (per second) for client move/resize */
@@ -86,6 +89,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+/* scratchpads */
 typedef struct {
 	const char *name;
 	const void *cmd;
@@ -103,16 +107,17 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_Return, togglescratch,  {.ui = 0 } },
-	{ MODKEY|ShiftMask,             XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
-	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
-	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+
+	{ MODKEY|ShiftMask,             XK_b,          togglebar,    {0} },
+	{ MODKEY,                       XK_j,          focusstack,   {.i = +1 } },
+	{ MODKEY,                       XK_k,          focusstack,   {.i = -1 } },
+	{ MODKEY,                       XK_i,          incnmaster,   {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_i,          incnmaster,   {.i = -1 } },
+	{ MODKEY,                       XK_h,          setmfact,     {.f = -0.01} },
+	{ MODKEY,                       XK_l,          setmfact,     {.f = +0.01} },
+	{ MODKEY,                       XK_w,          zoom,         {0} },
+	{ MODKEY,                       XK_Tab,        view,         {0} },
+	{ MODKEY|ShiftMask,             XK_c,          killclient,   {0} },
 
 	/* Layouts */
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} }, /* tiled */
