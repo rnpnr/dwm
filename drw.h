@@ -27,34 +27,34 @@ typedef struct {
 } Drw;
 
 /* Drawable abstraction */
-Drw *drw_create(Display *dpy, int screen, Window win, unsigned int w, unsigned int h);
-void drw_resize(Drw *drw, unsigned int w, unsigned int h);
-void drw_free(Drw *drw);
+static Drw *drw_create(Display *dpy, int screen, Window win, unsigned int w, unsigned int h);
+static void drw_resize(Drw *drw, unsigned int w, unsigned int h);
+static void drw_free(Drw *drw);
 
 /* Fnt abstraction */
-Fnt *drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount);
-void drw_fontset_free(Fnt* set);
-unsigned int drw_fontset_getwidth(Drw *drw, const char *text);
-unsigned int drw_fontset_getwidth_clamp(Drw *drw, const char *text, unsigned int n);
-void drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h);
+static Fnt *drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount);
+static void drw_fontset_free(Fnt* set);
+static unsigned int drw_fontset_getwidth(Drw *drw, const char *text);
+//static unsigned int drw_fontset_getwidth_clamp(Drw *drw, const char *text, unsigned int n);
+static void drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h);
 
 /* Colorscheme abstraction */
-void drw_clr_create(Drw *drw, Clr *dest, const char *clrname);
-void drw_clr_free(Drw *drw, Clr *c);
-Clr *drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount);
-void drw_scm_free(Drw *drw, Clr *scm, size_t clrcount);
+static void drw_clr_create(Drw *drw, Clr *dest, const char *clrname);
+static void drw_clr_free(Drw *drw, Clr *c);
+static Clr *drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount);
+static void drw_scm_free(Drw *drw, Clr *scm, size_t clrcount);
 
 /* Cursor abstraction */
-Cur *drw_cur_create(Drw *drw, int shape);
-void drw_cur_free(Drw *drw, Cur *cursor);
+static Cur *drw_cur_create(Drw *drw, int shape);
+static void drw_cur_free(Drw *drw, Cur *cursor);
 
 /* Drawing context manipulation */
-void drw_setfontset(Drw *drw, Fnt *set);
-void drw_setscheme(Drw *drw, Clr *scm);
+//static void drw_setfontset(Drw *drw, Fnt *set);
+static void drw_setscheme(Drw *drw, Clr *scm);
 
 /* Drawing functions */
-void drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int invert);
-int drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert);
+static void drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int invert);
+static int drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert);
 
 /* Map functions */
-void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
+static void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
